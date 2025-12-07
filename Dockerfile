@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 
 # Expose port (default 8080)
-EXPOSE 8080
+EXPOSE 8086
 
 # Run the binary
 CMD ["./main"]
