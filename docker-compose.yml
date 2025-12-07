@@ -5,10 +5,10 @@ services:
     ports:
       - "${AYEE_PORTAL_SERVER_PORT:-8086}:8086"
     environment:
-      - PG_DB_HOST=${PG_DB_HOST}
-      - PG_DB_PORT=${PG_DB_PORT}
-      - PG_DB_USER=${PG_DB_USER}
-      - PG_DB_PASSWORD=${PG_DB_PASSWORD}
-      - PG_AYEE_PORTAL_DB_NAME=${PG_AYEE_PORTAL_DB_NAME}
+      - PG_DB_HOST=credentials(PG_DB_HOST)
+      - PG_DB_PORT= credentials(PG_DB_PORT)
+      - PG_DB_USER=credentials(PG_DB_USER)
+      - PG_DB_PASSWORD=credentials(PG_DB_PASSWORD)
+      - PG_AYEE_PORTAL_DB_NAME=credentials(PG_AYEE_PORTAL_DB_NAME)
       - AYEE_PORTAL_SERVER_PORT=8086
     restart: always
