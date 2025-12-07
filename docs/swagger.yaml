@@ -1,0 +1,373 @@
+basePath: /api
+definitions:
+  models.AuditLog:
+    properties:
+      action:
+        description: e.g., 'CREATE_WEBSITE'
+        type: string
+      details:
+        type: string
+      id:
+        type: string
+      timestamp:
+        type: string
+      userId:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Category:
+    properties:
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      order:
+        type: integer
+    type: object
+  models.SystemSettings:
+    properties:
+      defaultTheme:
+        description: '''light'' | ''dark'''
+        type: string
+      maintenanceMode:
+        type: boolean
+      siteName:
+        type: string
+    type: object
+  models.User:
+    properties:
+      avatar:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        description: Keycloak UUID
+        type: string
+      role:
+        description: '''admin'' | ''user'''
+        type: string
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  models.Website:
+    properties:
+      category:
+        $ref: '#/definitions/models.Category'
+      categoryId:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      isVisible:
+        type: boolean
+      name:
+        type: string
+      updatedAt:
+        type: string
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is the backend API for Ayee Portal.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ayee Portal API
+  version: "1.0"
+paths:
+  /audit-logs:
+    get:
+      description: Get a list of all audit logs ordered by timestamp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.AuditLog'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get audit logs
+      tags:
+      - audit-logs
+    post:
+      consumes:
+      - application/json
+      description: Create a new audit log entry
+      parameters:
+      - description: Audit Log Data
+        in: body
+        name: log
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuditLog'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AuditLog'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create an audit log
+      tags:
+      - audit-logs
+  /categories:
+    get:
+      description: Get a list of all categories ordered by 'order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new category entry
+      parameters:
+      - description: Category Data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/models.Category'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Category'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new category
+      tags:
+      - categories
+  /settings:
+    get:
+      description: Get the global system settings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SystemSettings'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get system settings
+      tags:
+      - settings
+    put:
+      consumes:
+      - application/json
+      description: Update the global system settings
+      parameters:
+      - description: Settings Data
+        in: body
+        name: settings
+        required: true
+        schema:
+          $ref: '#/definitions/models.SystemSettings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SystemSettings'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update system settings
+      tags:
+      - settings
+  /users/sync:
+    post:
+      consumes:
+      - application/json
+      description: Sync user data from frontend/auth provider to local DB
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Sync user data
+      tags:
+      - users
+  /websites:
+    get:
+      description: Get a list of all websites with their categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Website'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all websites
+      tags:
+      - websites
+    post:
+      consumes:
+      - application/json
+      description: Create a new website entry
+      parameters:
+      - description: Website Data
+        in: body
+        name: website
+        required: true
+        schema:
+          $ref: '#/definitions/models.Website'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Website'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new website
+      tags:
+      - websites
+  /websites/{id}:
+    delete:
+      description: Delete a website by ID
+      parameters:
+      - description: Website ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a website
+      tags:
+      - websites
+swagger: "2.0"
