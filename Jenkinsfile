@@ -29,7 +29,7 @@ pipeline {
                     
                     // Deploy using docker-compose
                     // This assumes Jenkins has the necessary env vars injected via credentials or global config
-                    sh 'docker-compose up -d --build'
+                    sh 'docker compose up -d --build'
                 }
             }
         }
