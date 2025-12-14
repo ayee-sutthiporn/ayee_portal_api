@@ -24,12 +24,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Stop and remove existing container if running (optional, compose handles this usually but good for cleanup)
-                    // sh 'docker-compose down || true'
-                    
-                    // Deploy using docker-compose
-                    // This assumes Jenkins has the necessary env vars injected via credentials or global config
-                    sh 'docker compose up -d --build'
+                    withCredentials([
+                        string(credentialsId: 'PG_DB_HOST', variable: 'PG_DB_HOST'),
+                        string(credentialsId: 'PG_DB_PORT', variable: 'PG_DB_PORT'),
+                        string(credentialsId: 'PG_DB_USER', variable: 'PG_DB_USER'),
+                        string(credentialsId: 'PG_DB_PASSWORD', variable: 'PG_DB_PASSWORD'),
+                        string(credentialsId: 'PG_AYEE_PORTAL_DB_NAME', variable: 'PG_AYEE_PORTAL_DB_NAME')
+                    ]) {
+                        // Deploy using docker-compose
+                        sh 'docker compose up -d --build'
+                    }
                 }
             }
         }
